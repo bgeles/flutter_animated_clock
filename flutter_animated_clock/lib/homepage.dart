@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                               fontFamily: 'avenir',
                               fontWeight: FontWeight.w500,
                               color: Colors.white,
-                              fontSize: 20),
+                              fontSize: 18),
                         ),
                       ],
                     ),
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                     flex: 4,
                     fit: FlexFit.tight,
                     child: Align(
-                      alignment: Alignment.bottomLeft,
+                      alignment: Alignment.center,
                       child: ClockView(
                         size: MediaQuery.of(context).size.height / 4,
                       ),
