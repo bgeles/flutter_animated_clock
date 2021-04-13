@@ -34,8 +34,8 @@ class _ClockViewState extends State<ClockView> {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        width: 300,
-        height: 300,
+        width: widget.size,
+        height: widget.size,
         child: Transform.rotate(
           angle: -pi / 2,
           child: CustomPaint(
@@ -66,32 +66,30 @@ class ClockPainter extends CustomPainter {
     var outlineBrush = Paint()
       ..color = Color(0xFFEAECFF)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 16;
+      ..strokeWidth = size.width / 20;
 
-    var centerFillBrush = Paint()
-      ..color = Color(0xFFEAECFF)
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 16;
+    var centerDotBrush = Paint()
+      ..color = Color(0xFFEAECFF);
 
     var secHandBrush = Paint()
       ..color = Colors.orange[300]
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 8;
+      ..strokeWidth = size.width / 60;
 
     var minHandBrush = Paint()
       ..shader = RadialGradient(colors: [Color(0xFF748EF6), Color(0xFF77DDFF)])
           .createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 16;
+      ..strokeWidth = size.width / 20;
 
     var hourHandBrush = Paint()
       ..shader = RadialGradient(colors: [Color(0xFFEA74AB), Color(0xFFC279FB)])
           .createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 16;
+      ..strokeWidth = size.width / 24;
 
     var dashBrush = Paint()
       ..color = Color(0xFFEAECFF)
@@ -116,7 +114,7 @@ class ClockPainter extends CustomPainter {
     var secHandY = centerY + radius * 0.6 * sin(dateTime.second * 6 * pi / 180);
     canvas.drawLine(center, Offset(secHandX, secHandY), secHandBrush);
 
-    canvas.drawCircle(center, radius * 0.12, centerFillBrush);
+    canvas.drawCircle(center, radius * 0.12, centerDotBrush);
 
     var outerCircleRadius = radius ;
     var innerCircleRadius = radius * 0.9;
