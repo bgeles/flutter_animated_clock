@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_clock/clock_view.dart';
+import 'package:flutter_animated_clock/data.dart';
+import 'package:flutter_animated_clock/enums.dart';
+import 'package:flutter_animated_clock/theme_data.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import 'menu_info.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -29,111 +35,115 @@ class _HomePageState extends State<HomePage> {
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              buildMenuButton('Clock', 'assets/clock_icon.png'),
-              buildMenuButton('Alarm', 'assets/alarm_icon.png'),
-              buildMenuButton('Timer', 'assets/timer_icon.png'),
-              buildMenuButton('Stopwatch', 'assets/stopwatch_icon.png'),
-            ],
+            children: menuItems
+                .map((currentMenuInfo) => buildMenuButton(currentMenuInfo))
+                .toList(),
           ),
           VerticalDivider(
             color: Colors.white54,
             width: 1,
           ),
           Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 32,
-                vertical: 64,
-              ),
-              alignment: Alignment.center,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    fit: FlexFit.tight,
-                    child: Text(
-                      'Clock',
-                      style: TextStyle(
-                          fontFamily: 'avenir',
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 24),
-                    ),
+            child: Consumer<MenuInfo>(
+              builder: (BuildContext context, MenuInfo value, Widget child) {
+                if (value.menuType != MenuType.clock){
+                  return Container();
+                }
+                return Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 64,
                   ),
-                  Flexible(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          formattedTime,
-                          style: TextStyle(
-                            fontFamily: 'avenir',
-                            fontWeight: FontWeight.w300,
-                            color: Colors.white,
-                            fontSize: 64,
-                          ),
-                        ),
-                        Text(
-                          formattedDate,
+                  alignment: Alignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        fit: FlexFit.tight,
+                        child: Text(
+                          'Clock',
                           style: TextStyle(
                               fontFamily: 'avenir',
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                              fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    flex: 4,
-                    fit: FlexFit.tight,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: ClockView(
-                        size: MediaQuery.of(context).size.height / 4,
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    fit: FlexFit.tight,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Timezone',
-                          style: TextStyle(
-                              fontFamily: 'avenir',
+                              fontWeight: FontWeight.w700,
                               color: Colors.white,
                               fontSize: 24),
                         ),
-                        Row(
+                      ),
+                      Flexible(
+                        flex: 2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.language,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              width: 16,
-                            ),
                             Text(
-                              'UTC' + offsetSign + timezoneString,
+                              formattedTime,
                               style: TextStyle(
                                 fontFamily: 'avenir',
+                                fontWeight: FontWeight.w300,
                                 color: Colors.white,
-                                fontSize: 14,
+                                fontSize: 64,
                               ),
                             ),
+                            Text(
+                              formattedDate,
+                              style: TextStyle(
+                                  fontFamily: 'avenir',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                  fontSize: 18),
+                            ),
                           ],
-                        )
-                      ],
-                    ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 4,
+                        fit: FlexFit.tight,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: ClockView(
+                            size: MediaQuery.of(context).size.height / 4,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 2,
+                        fit: FlexFit.tight,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Timezone',
+                              style: TextStyle(
+                                  fontFamily: 'avenir',
+                                  color: Colors.white,
+                                  fontSize: 24),
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.language,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Text(
+                                  'UTC' + offsetSign + timezoneString,
+                                  style: TextStyle(
+                                    fontFamily: 'avenir',
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ],
@@ -141,31 +151,44 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Padding buildMenuButton(String title, String image) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: FlatButton(
-        onPressed: null,
-        child: Column(
-          children: [
-            Image.asset(
-              image,
-              scale: 1.5,
+  Widget buildMenuButton(MenuInfo currentMenuInfo) {
+    return Consumer<MenuInfo>(
+      builder: (BuildContext context, MenuInfo value, Widget child) {
+        return FlatButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(32),
             ),
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              title ?? '',
-              style: TextStyle(
-                fontFamily: 'avenir',
-                color: Colors.white,
-                fontSize: 14,
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 0),
+          color: currentMenuInfo.menuType == value.menuType
+              ? CustomColors.menuBackgroundColor
+              : Colors.transparent,
+          onPressed: () {
+            var menuInfo = Provider.of<MenuInfo>(context, listen: false);
+            menuInfo.updateMenu(currentMenuInfo);
+          },
+          child: Column(
+            children: [
+              Image.asset(
+                currentMenuInfo.imageSource,
+                scale: 1.5,
               ),
-            ),
-          ],
-        ),
-      ),
+              SizedBox(
+                height: 16,
+              ),
+              Text(
+                currentMenuInfo.title ?? '',
+                style: TextStyle(
+                  fontFamily: 'avenir',
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
