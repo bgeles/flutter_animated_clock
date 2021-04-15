@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_clock/clock_view.dart';
+import 'file:///C:/Bruno/Flutter/flutter_animated_clock/flutter_animated_clock/lib/views/clock_view.dart';
 import 'package:flutter_animated_clock/data.dart';
 import 'package:flutter_animated_clock/enums.dart';
-import 'package:flutter_animated_clock/theme_data.dart';
+import 'package:flutter_animated_clock/views/alarm_page.dart';
+import 'file:///C:/Bruno/Flutter/flutter_animated_clock/flutter_animated_clock/lib/constants/theme_data.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'menu_info.dart';
+import '../model/menu_info.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -46,10 +47,10 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Consumer<MenuInfo>(
               builder: (BuildContext context, MenuInfo value, Widget child) {
-                if (value.menuType != MenuType.clock){
-                  return Container();
+                if (value.menuType == MenuType.alarm){
+                  return AlarmPage();
                 }
-                return Container(
+                              return Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 64,

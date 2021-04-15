@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_clock/enums.dart';
 import 'package:provider/provider.dart';
 
-import 'homepage.dart';
-import 'menu_info.dart';
+import 'views/homepage.dart';
+import 'model/menu_info.dart';
 
 void main() {
   runApp(MyApp());
