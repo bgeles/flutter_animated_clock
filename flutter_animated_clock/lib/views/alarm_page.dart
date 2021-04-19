@@ -1,6 +1,9 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_clock/constants/theme_data.dart';
+import 'package:flutter_animated_clock/main.dart';
+import 'package:flutter_animated_clock/model/alarm_info.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../data.dart';
 
@@ -119,7 +122,7 @@ class _AlarmPageState extends State<AlarmPage> {
                   color: CustomColors.clockOutline,
                   borderType: BorderType.RRect,
                   radius: Radius.circular(24),
-                  dashPattern: [5,4],
+                  dashPattern: [5, 4],
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -135,7 +138,9 @@ class _AlarmPageState extends State<AlarmPage> {
                         horizontal: 32,
                         vertical: 16,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        scheduleAlarm();
+                      },
                       child: Column(
                         children: [
                           Image.asset(
@@ -164,4 +169,58 @@ class _AlarmPageState extends State<AlarmPage> {
       ),
     );
   }
+
+  void scheduleAlarm() async {
+    print('Funcao Alarme Clicada');
+    var scheduledNotificationDateTime =
+        DateTime.now().add(Duration(seconds: 10));
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'alarm_notif',
+      'alarm_notif',
+      'Channel for Alarm notification',
+      icon: 'codex_logo',
+      sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
+      largeIcon: DrawableResourceAndroidBitmap('codex_logo'),
+    );
+
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+        sound: 'a_long_cold_sting.wav',
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true);
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.schedule(
+        0,
+        'Office',
+        'Good morning! Time for Office.',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics);
+  }
+
+// void onSaveAlarm() {
+//   DateTime scheduleAlarmDateTime;
+//   if (_alarmTime.isAfter(DateTime.now()))
+//     scheduleAlarmDateTime = _alarmTime;
+//   else
+//     scheduleAlarmDateTime = _alarmTime.add(Duration(days: 1));
+//
+//   var alarmInfo = AlarmInfo(
+//     alarmDateTime: scheduleAlarmDateTime,
+//     gradientColorIndex: _currentAlarms.length,
+//     title: 'alarm',
+//   );
+//   _alarmHelper.insertAlarm(alarmInfo);
+//   scheduleAlarm(scheduleAlarmDateTime, alarmInfo);
+//   Navigator.pop(context);
+//   loadAlarms();
+// }
+//
+// void deleteAlarm(int id) {
+//   _alarmHelper.delete(id);
+//   //unsubscribe for notification
+//   loadAlarms();
+// }
 }
